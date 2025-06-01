@@ -1,0 +1,163 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>104键标准键盘可视化</title>
+    <style>
+        body { font-family: Arial; background: #f5f5f5; }
+        .keyboard { 
+            width: 1100px; margin: 50px auto; 
+            background: #e0e0e0; padding: 20px; 
+            border-radius: 10px; box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+        .section { margin-bottom: 15px; }
+        .key-row { display: flex; margin-bottom: 10px; }
+        .key {
+            height: 50px; margin-right: 5px; 
+            background: #fff; border-radius: 5px;
+            display: flex; justify-content: center; 
+            align-items: center; font-weight: bold;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            transition: all 0.1s;
+        }
+        .key.active {
+            background: #4CAF50; color: white;
+            transform: translateY(2px);
+            box-shadow: 0 1px 2px rgba(0,0,0,0.3);
+        }
+        .function-keys .key { width: 50px; }
+        .main-keys .key { width: 50px; }
+        .space { width: 300px !important; }
+        .tab { width: 75px !important; }
+        .caps { width: 90px !important; }
+        .shift { width: 110px !important; }
+        .enter { width: 90px !important; }
+        .backspace { width: 100px !important; }
+        .ctrl, .alt, .win { width: 70px !important; }
+        .arrow { width: 50px; }
+        .numpad .key { width: 50px; }
+        .edit-keys { margin-left: 20px; }
+    </style>
+</head>
+<body>
+    <div class="keyboard">
+        <!-- 功能键区 -->
+        <div class="section function-keys">
+            <div class="key-row">
+                <div class="key">Esc</div>
+                <div class="key">F1</div><div class="key">F2</div><div class="key">F3</div><div class="key">F4</div>
+                <div class="key">F5</div><div class="key">F6</div><div class="key">F7</div><div class="key">F8</div>
+                <div class="key">F9</div><div class="key">F10</div><div class="key">F11</div><div class="key">F12</div>
+                <div class="key">PrtSc</div><div class="key">ScrLk</div><div class="key">Pause</div>
+            </div>
+        </div>
+
+        <!-- 主输入区 -->
+        <div class="section main-keys">
+            <div class="key-row">
+                <div class="key">`</div><div class="key">1</div><div class="key">2</div><div class="key">3</div>
+                <div class="key">4</div><div class="key">5</div><div class="key">6</div><div class="key">7</div>
+                <div class="key">8</div><div class="key">9</div><div class="key">0</div><div class="key">-</div>
+                <div class="key">=</div><div class="key backspace">Backspace</div>
+                <div class="key edit-keys">Insert</div><div class="key">Home</div><div class="key">PgUp</div>
+            </div>
+            <div class="key-row">
+                <div class="key tab">Tab</div>
+                <div class="key">Q</div><div class="key">W</div><div class="key">E</div><div class="key">R</div>
+                <div class="key">T</div><div class="key">Y</div><div class="key">U</div><div class="key">I</div>
+                <div class="key">O</div><div class="key">P</div><div class="key">[</div><div class="key">]</div>
+                <div class="key" style="width: 75px;">\</div>
+                <div class="key edit-keys">Delete</div><div class="key">End</div><div class="key">PgDn</div>
+            </div>
+            <div class="key-row">
+                <div class="key caps">Caps Lock</div>
+                <div class="key">A</div><div class="key">S</div><div class="key">D</div><div class="key">F</div>
+                <div class="key">G</div><div class="key">H</div><div class="key">J</div><div class="key">K</div>
+                <div class="key">L</div><div class="key">;</div><div class="key">'</div>
+                <div class="key enter" style="width: 138px;">Enter</div>
+            </div>
+            <div class="key-row">
+                <div class="key shift">Shift</div>
+                <div class="key">Z</div><div class="key">X</div><div class="key">C</div><div class="key">V</div>
+                <div class="key">B</div><div class="key">N</div><div class="key">M</div><div class="key">,</div>
+                <div class="key">.</div><div class="key">/</div>
+                <div class="key shift">Shift</div>
+                <div class="key arrow">↑</div>
+            </div>
+            <div class="key-row">
+                <div class="key ctrl">Ctrl</div>
+                <div class="key win">Win</div>
+                <div class="key alt">Alt</div>
+                <div class="key space">Space</div>
+                <div class="key alt">Alt</div>
+                <div class="key win">Win</div>
+                <div class="key">Menu</div>
+                <div class="key ctrl">Ctrl</div>
+                <div class="key arrow">←</div>
+                <div class="key arrow">↓</div>
+                <div class="key arrow">→</div>
+            </div>
+        </div>
+
+        <!-- 数字小键盘 -->
+        <div class="section numpad" style="display: flex;">
+            <div style="margin-right: 20px;">
+                <div class="key-row">
+                    <div class="key">Num</div><div class="key">/</div><div class="key">*</div><div class="key">-</div>
+                </div>
+                <div class="key-row">
+                    <div class="key">7</div><div class="key">8</div><div class="key">9</div>
+                    <div class="key" style="height: 105px;">+</div>
+                </div>
+                <div class="key-row">
+                    <div class="key">4</div><div class="key">5</div><div class="key">6</div>
+                </div>
+                <div class="key-row">
+                    <div class="key">1</div><div class="key">2</div><div class="key">3</div>
+                    <div class="key" style="height: 105px;">Enter</div>
+                </div>
+                <div class="key-row">
+                    <div class="key" style="width: 105px;">0</div>
+                    <div class="key">.</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('keydown', function(e) {
+            const keys = document.querySelectorAll('.key');
+            keys.forEach(key => {
+                if (key.textContent.toLowerCase() === e.key.toLowerCase() || 
+                    key.textContent === getSpecialKeyName(e)) {
+                    key.classList.add('active');
+                }
+            });
+        });
+
+        document.addEventListener('keyup', function() {
+            document.querySelectorAll('.key.active').forEach(key => {
+                key.classList.remove('active');
+            });
+        });
+
+        function getSpecialKeyName(event) {
+            const map = {
+                'Escape': 'Esc', 'Tab': 'Tab', 'CapsLock': 'Caps Lock',
+                'ShiftLeft': 'Shift', 'ShiftRight': 'Shift',
+                'ControlLeft': 'Ctrl', 'ControlRight': 'Ctrl',
+                'AltLeft': 'Alt', 'AltRight': 'Alt',
+                'MetaLeft': 'Win', 'MetaRight': 'Win',
+                'ContextMenu': 'Menu', 'Enter': 'Enter',
+                'Backspace': 'Backspace', 'Delete': 'Delete',
+                'Insert': 'Insert', 'Home': 'Home',
+                'End': 'End', 'PageUp': 'PgUp',
+                'PageDown': 'PgDn', 'NumLock': 'Num',
+                'ArrowUp': '↑', 'ArrowDown': '↓',
+                'ArrowLeft': '←', 'ArrowRight': '→'
+            };
+            return map[event.code] || event.key;
+        }
+    </script>
+</body>
+</html>
