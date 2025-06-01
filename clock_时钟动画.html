@@ -1,0 +1,117 @@
+
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>动态时钟</title>
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+            background: linear-gradient(135deg, #8fd5d5, #57bebb);
+            font-family: 'Arial', sans-serif;
+        }
+        
+        /* 指针式时钟样式 */
+        .analog-clock {
+            width: 200px;
+            height: 200px;
+            border-radius: 50%;
+            background: white;
+            position: relative;
+            box-shadow: 0 0 20px rgba(0,0,0,0.2);
+        }
+        
+        .clock-center {
+            width: 12px;
+            height: 12px;
+            background: #333;
+            border-radius: 50%;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 10;
+        }
+        
+        .hour-hand, .minute-hand, .second-hand {
+            position: absolute;
+            left: 50%;
+            bottom: 50%;
+            transform-origin: bottom center;
+        }
+        
+        .hour-hand {
+            width: 4px;
+            height: 50px;
+            background: #333;
+            margin-left: -2px;
+        }
+        
+        .minute-hand {
+            width: 3px;
+            height: 70px;
+            background: #555;
+            margin-left: -1.5px;
+        }
+        
+        .second-hand {
+            width: 2px;
+            height: 80px;
+            background: red;
+            margin-left: -1px;
+        }
+        
+        /* 数字时钟样式 */
+        .digital-clock {
+            margin-top: 30px;
+            font-size: 2.5rem;
+            color: white;
+            text-shadow: 0 0 10px rgba(0,0,0,0.3);
+        }
+    </style>
+</head>
+<body>
+    <div class="analog-clock">
+        <div class="hour-hand"></div>
+        <div class="minute-hand"></div>
+        <div class="second-hand"></div>
+        <div class="clock-center"></div>
+    </div>
+    
+    <div class="digital-clock" id="digitalClock"></div>
+
+    <script>
+        function updateClock() {
+            const now = new Date();
+            const hours = now.getHours();
+            const minutes = now.getMinutes();
+            const seconds = now.getSeconds();
+            
+            // 更新指针时钟
+            const hourDeg = (hours % 12) * 30 + minutes * 0.5;
+            const minuteDeg = minutes * 6;
+            const secondDeg = seconds * 6;
+            
+            document.querySelector('.hour-hand').style.transform = `rotate(${hourDeg}deg)`;
+            document.querySelector('.minute-hand').style.transform = `rotate(${minuteDeg}deg)`;
+            document.querySelector('.second-hand').style.transform = `rotate(${secondDeg}deg)`;
+            
+            // 更新数字时钟
+            const timeString = `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+            document.getElementById('digitalClock').textContent = timeString;
+        }
+        
+        // 初始更新
+        updateClock();
+        
+        // 每秒更新一次
+        setInterval(updateClock, 1000);
+    </script>
+</body>
+</html>
