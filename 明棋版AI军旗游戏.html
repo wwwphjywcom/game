@@ -1,0 +1,1111 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>明棋版AI军旗游戏</title>
+    <style>
+        body {
+            font-family: 'Microsoft YaHei', sans-serif;
+            background-color: #f5f5f5;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+        }
+        
+        h1 {
+            color: #333;
+            text-align: center;
+            margin-bottom: 10px;
+        }
+        
+        .game-container {
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            margin-top: 20px;
+            position: relative;
+        }
+        
+        .controls {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            padding: 0 10px;
+        }
+        
+        button {
+            background-color: #4a89dc;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: background-color 0.3s;
+        }
+        
+        button:hover {
+            background-color: #3b7dd8;
+        }
+        
+        .turn-indicator {
+            font-weight: bold;
+            padding: 5px 10px;
+            border-radius: 4px;
+        }
+        
+        .player-turn {
+            background-color: #4a89dc;
+            color: white;
+        }
+        
+        .ai-turn {
+            background-color: #e9573f;
+            color: white;
+        }
+        
+        #game-board {
+            position: relative;
+            width: 720px;
+            height: 420px;
+            background-color: #f9f3e6;
+            border: 2px solid #8b5a2b;
+            box-sizing: border-box;
+        }
+        
+        .intersection {
+            position: absolute;
+            width: 8px;
+            height: 8px;
+            background-color: #333;
+            border-radius: 50%;
+            transform: translate(-4px, -4px);
+            z-index: 10;
+        }
+        
+        .grid-line {
+            position: absolute;
+            background-color: #8b5a2b;
+            z-index: 5;
+        }
+        
+        .horizontal-line {
+            height: 2px;
+            width: 660px;
+            left: 30px;
+        }
+        
+        .vertical-line {
+            width: 2px;
+            height: 300px;
+            top: 30px;
+        }
+        
+        .piece {
+            position: absolute;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            cursor: pointer;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+            transition: transform 0.2s;
+            z-index: 20;
+            user-select: none;
+            font-size: 14px;
+        }
+        
+        .piece.player {
+            background: #4a89dc;
+            color: white;
+            border: 2px solid #3b7dd8;
+        }
+        
+        .piece.ai {
+            background: #e9573f;
+            color: white;
+            border: 2px solid #da3e24;
+        }
+        
+        .piece.flag {
+            background: #f6bb42;
+            border: 2px solid #e6ab2b;
+        }
+        
+        .piece.bomb {
+            background: #333;
+            color: white;
+        }
+        
+        .piece.mine {
+            background: #666;
+            color: white;
+        }
+        
+        .piece.selected {
+            transform: scale(1.1);
+            box-shadow: 0 0 10px gold;
+            z-index: 30;
+        }
+        
+        .ai-hint {
+            position: absolute;
+            z-index: 15;
+        }
+        
+        .hint-line {
+            position: absolute;
+            background: rgba(255, 255, 255, 0.7);
+            height: 3px;
+            transform-origin: left center;
+            z-index: 10;
+        }
+        
+        .hint-label {
+            position: absolute;
+            background: white;
+            padding: 2px 5px;
+            border-radius: 3px;
+            font-size: 12px;
+            font-weight: bold;
+            transform: translateY(-50%);
+        }
+        
+        .hint-1 .hint-line { background: #FFCE54; }
+        .hint-2 .hint-line { background: #A0D468; }
+        .hint-3 .hint-line { background: #ED5565; }
+        
+        .hint-1 .hint-label { color: #FFCE54; border: 1px solid #FFCE54; }
+        .hint-2 .hint-label { color: #A0D468; border: 1px solid #A0D468; }
+        .hint-3 .hint-label { color: #ED5565; border: 1px solid #ED5565; }
+        
+        /* 特殊区域样式 */
+        .camp {
+            position: absolute;
+            width: 50px;
+            height: 50px;
+            background-color: rgba(100, 150, 255, 0.2);
+            border: 2px dashed #4a89dc;
+            border-radius: 5px;
+            z-index: 2;
+        }
+        
+        .headquarters {
+            position: absolute;
+            width: 50px;
+            height: 50px;
+            background-color: rgba(255, 100, 100, 0.2);
+            border: 2px solid #e9573f;
+            border-radius: 5px;
+            z-index: 2;
+        }
+        
+        /* 铁路线样式 */
+        .railway {
+            position: absolute;
+            background-color: rgba(0, 0, 0, 0.1);
+            z-index: 1;
+        }
+        
+        .horizontal-railway {
+            width: 660px;
+            height: 12px;
+            left: 30px;
+            background: repeating-linear-gradient(
+                to right,
+                #8b5a2b,
+                #8b5a2b 5px,
+                transparent 5px,
+                transparent 10px
+            );
+            border-top: 1px solid #8b5a2b;
+            border-bottom: 1px solid #8b5a2b;
+        }
+        
+        .vertical-railway {
+            width: 12px;
+            height: 300px;
+            top: 30px;
+            background: repeating-linear-gradient(
+                to bottom,
+                #8b5a2b,
+                #8b5a2b 5px,
+                transparent 5px,
+                transparent 10px
+            );
+            border-left: 1px solid #8b5a2b;
+            border-right: 1px solid #8b5a2b;
+        }
+        
+        .game-message {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: rgba(0, 0, 0, 0.8);
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            z-index: 100;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <h1>明棋版AI军旗游戏</h1>
+    <div class="game-container">
+        <div class="controls">
+            <div id="turn-indicator" class="turn-indicator player-turn">玩家回合</div>
+            <button id="show-hints">显示AI建议 (H)</button>
+            <button id="restart">重新开始 (R)</button>
+        </div>
+        <div id="game-board">
+            <!-- 棋盘将通过JavaScript动态生成 -->
+            <div class="game-message" id="game-message"></div>
+        </div>
+    </div>
+
+    <script>
+        // 游戏常量
+        const PIECE_RANKS = {
+            '司令': 9,
+            '军长': 8,
+            '师长': 7,
+            '旅长': 6,
+            '团长': 5,
+            '营长': 4,
+            '连长': 3,
+            '排长': 2,
+            '工兵': 1,
+            '炸弹': 0,
+            '地雷': -1,
+            '军旗': -2
+        };
+
+        const PIECE_VALUES = {
+            '司令': 100,
+            '军长': 50,
+            '师长': 30,
+            '旅长': 25,
+            '团长': 20,
+            '营长': 15,
+            '连长': 10,
+            '排长': 5,
+            '工兵': 3,
+            '炸弹': 10,
+            '地雷': 5,
+            '军旗': 1000
+        };
+
+        // 游戏状态
+        const gameState = {
+            board: Array(12).fill().map(() => Array(5).fill(null)),
+            playerPieces: [],
+            aiPieces: [],
+            revealed: Array(12).fill().map(() => Array(5).fill(true)), // 全部明棋
+            turn: 'player',
+            selectedPos: null,
+            gameOver: false,
+            showHints: false
+        };
+
+        // DOM元素
+        const gameBoard = document.getElementById('game-board');
+        const turnIndicator = document.getElementById('turn-indicator');
+        const showHintsBtn = document.getElementById('show-hints');
+        const restartBtn = document.getElementById('restart');
+        const gameMessage = document.getElementById('game-message');
+
+        // 初始化游戏
+        function initGame() {
+            // 清空棋盘
+            gameBoard.innerHTML = '<div class="game-message" id="game-message"></div>';
+            
+            // 重置游戏状态
+            gameState.board = Array(12).fill().map(() => Array(5).fill(null));
+            gameState.revealed = Array(12).fill().map(() => Array(5).fill(true)); // 全部明棋
+            gameState.turn = 'player';
+            gameState.selectedPos = null;
+            gameState.gameOver = false;
+            gameState.showHints = false;
+            
+            // 创建棋子
+            gameState.playerPieces = createPieces();
+            gameState.aiPieces = createPieces();
+            
+            // 放置棋子
+            placePieces(gameState.playerPieces, 0, 1);
+            placePieces(gameState.aiPieces, 6, 1);
+            
+            // 绘制棋盘
+            drawBoard();
+            
+            // 更新UI
+            updateTurnIndicator();
+            showHintsBtn.textContent = '显示AI建议 (H)';
+            gameMessage.style.display = 'none';
+            
+            // 如果是AI回合，开始AI移动
+            if (gameState.turn === 'ai') {
+                setTimeout(aiTurn, 1000);
+            }
+        }
+
+        // 创建棋子
+        function createPieces() {
+            const pieces = [];
+            
+            // 添加各个棋子
+            pieces.push('司令');
+            pieces.push('军长');
+            for (let i = 0; i < 2; i++) pieces.push('师长');
+            for (let i = 0; i < 2; i++) pieces.push('旅长');
+            for (let i = 0; i < 2; i++) pieces.push('团长');
+            for (let i = 0; i < 2; i++) pieces.push('营长');
+            for (let i = 0; i < 3; i++) pieces.push('连长');
+            for (let i = 0; i < 3; i++) pieces.push('排长');
+            for (let i = 0; i < 3; i++) pieces.push('工兵');
+            for (let i = 0; i < 2; i++) pieces.push('炸弹');
+            for (let i = 0; i < 3; i++) pieces.push('地雷');
+            pieces.push('军旗');
+            
+            // 随机排序
+            return shuffleArray(pieces);
+        }
+
+        // 放置棋子
+        function placePieces(pieces, startCol, startRow) {
+            let index = 0;
+            for (let col = startCol; col < startCol + 6; col++) {
+                for (let row = startRow; row < startRow + 3; row++) {
+                    if (index < pieces.length) {
+                        gameState.board[col][row] = pieces[index];
+                        index++;
+                    }
+                }
+            }
+            
+            // 放置军旗在大本营
+            gameState.board[startCol][0] = '军旗';
+            gameState.board[startCol + 5][4] = '军旗';
+        }
+
+        // 绘制棋盘
+        function drawBoard() {
+            // 清空棋盘（保留消息框）
+            const existingMessage = gameBoard.querySelector('#game-message');
+            gameBoard.innerHTML = '';
+            if (existingMessage) gameBoard.appendChild(existingMessage);
+            
+            // 棋盘参数
+            const cellSize = 60;
+            const offsetX = 30;
+            const offsetY = 30;
+            
+            // 绘制网格线
+            for (let row = 0; row <= 5; row++) {
+                const line = document.createElement('div');
+                line.className = 'grid-line horizontal-line';
+                line.style.top = `${offsetY + row * cellSize - 1}px`;
+                gameBoard.appendChild(line);
+            }
+            
+            for (let col = 0; col <= 12; col++) {
+                const line = document.createElement('div');
+                line.className = 'grid-line vertical-line';
+                line.style.left = `${offsetX + col * cellSize - 1}px`;
+                gameBoard.appendChild(line);
+            }
+            
+            // 绘制交叉点
+            for (let col = 0; col < 12; col++) {
+                for (let row = 0; row < 5; row++) {
+                    const intersection = document.createElement('div');
+                    intersection.className = 'intersection';
+                    intersection.style.left = `${offsetX + col * cellSize}px`;
+                    intersection.style.top = `${offsetY + row * cellSize}px`;
+                    intersection.dataset.col = col;
+                    intersection.dataset.row = row;
+                    intersection.addEventListener('click', handleIntersectionClick);
+                    gameBoard.appendChild(intersection);
+                }
+            }
+            
+            // 绘制特殊区域
+            // 行营
+            const camps = [
+                [2, 1], [4, 1], [6, 1], [8, 1], [10, 1],
+                [2, 3], [4, 3], [6, 3], [8, 3], [10, 3]
+            ];
+            
+            camps.forEach(([col, row]) => {
+                const camp = document.createElement('div');
+                camp.className = 'camp';
+                camp.style.left = `${offsetX + col * cellSize - 25}px`;
+                camp.style.top = `${offsetY + row * cellSize - 25}px`;
+                gameBoard.appendChild(camp);
+            });
+            
+            // 大本营
+            const headquarters = [
+                [0, 0], [0, 4], [11, 0], [11, 4]
+            ];
+            
+            headquarters.forEach(([col, row]) => {
+                const hq = document.createElement('div');
+                hq.className = 'headquarters';
+                hq.style.left = `${offsetX + col * cellSize - 25}px`;
+                hq.style.top = `${offsetY + row * cellSize - 25}px`;
+                gameBoard.appendChild(hq);
+            });
+            
+            // 铁路线
+            const horizontalRailway = document.createElement('div');
+            horizontalRailway.className = 'railway horizontal-railway';
+            horizontalRailway.style.top = `${offsetY + 2 * cellSize - 6}px`;
+            gameBoard.appendChild(horizontalRailway);
+            
+            const verticalRailway1 = document.createElement('div');
+            verticalRailway1.className = 'railway vertical-railway';
+            verticalRailway1.style.left = `${offsetX + 5 * cellSize - 6}px`;
+            gameBoard.appendChild(verticalRailway1);
+            
+            const verticalRailway2 = document.createElement('div');
+            verticalRailway2.className = 'railway vertical-railway';
+            verticalRailway2.style.left = `${offsetX + 6 * cellSize - 6}px`;
+            gameBoard.appendChild(verticalRailway2);
+            
+            // 绘制棋子（全部明棋）
+            for (let col = 0; col < 12; col++) {
+                for (let row = 0; row < 5; row++) {
+                    const piece = gameState.board[col][row];
+                    if (piece) {
+                        const pieceElement = document.createElement('div');
+                        pieceElement.className = 'piece';
+                        pieceElement.textContent = piece; // 直接显示棋子类型
+                        
+                        // 添加特殊棋子样式
+                        if (piece === '炸弹') {
+                            pieceElement.classList.add('bomb');
+                        } else if (piece === '地雷') {
+                            pieceElement.classList.add('mine');
+                        }
+                        
+                        if (col < 6) {
+                            pieceElement.classList.add('player');
+                        } else {
+                            pieceElement.classList.add('ai');
+                        }
+                        
+                        if (piece === '军旗') {
+                            pieceElement.classList.add('flag');
+                        }
+                        
+                        pieceElement.style.left = `${offsetX + col * cellSize - 20}px`;
+                        pieceElement.style.top = `${offsetY + row * cellSize - 20}px`;
+                        pieceElement.dataset.col = col;
+                        pieceElement.dataset.row = row;
+                        
+                        // 只有玩家方的棋子可以点击
+                        if (col < 6 && gameState.turn === 'player' && !gameState.gameOver) {
+                            pieceElement.addEventListener('click', handlePieceClick);
+                        }
+                        
+                        gameBoard.appendChild(pieceElement);
+                    }
+                }
+            }
+            
+            // 显示AI提示
+            if (gameState.showHints && gameState.turn === 'player' && !gameState.gameOver) {
+                showAISuggestions();
+            }
+        }
+
+        // 处理棋子点击
+        function handlePieceClick(event) {
+            if (gameState.gameOver || gameState.turn !== 'player') return;
+            
+            const piece = event.target;
+            const col = parseInt(piece.dataset.col);
+            const row = parseInt(piece.dataset.row);
+            
+            // 取消选中
+            if (gameState.selectedPos && gameState.selectedPos.col === col && gameState.selectedPos.row === row) {
+                gameState.selectedPos = null;
+                drawBoard();
+                return;
+            }
+            
+            // 选中棋子
+            gameState.selectedPos = { col, row };
+            drawBoard();
+            
+            // 高亮选中棋子
+            const pieceElements = document.querySelectorAll('.piece');
+            pieceElements.forEach(p => {
+                if (parseInt(p.dataset.col) === col && parseInt(p.dataset.row) === row) {
+                    p.classList.add('selected');
+                }
+            });
+        }
+
+        // 处理交叉点点击
+        function handleIntersectionClick(event) {
+            if (gameState.gameOver || gameState.turn !== 'player' || !gameState.selectedPos) return;
+            
+            const col = parseInt(event.target.dataset.col);
+            const row = parseInt(event.target.dataset.row);
+            const fromCol = gameState.selectedPos.col;
+            const fromRow = gameState.selectedPos.row;
+            
+            tryMove(fromCol, fromRow, col, row);
+        }
+
+        // 尝试移动棋子
+        function tryMove(fromCol, fromRow, toCol, toRow) {
+            // 检查是否在移动自己的棋子
+            if (fromCol >= 6) return false;
+            
+            const piece = gameState.board[fromCol][fromRow];
+            if (!piece) return false;
+            
+            // 检查目标位置是否有效
+            if (!isValidMove(fromCol, fromRow, toCol, toRow)) return false;
+            
+            // 检查目标位置是否有棋子
+            const targetPiece = gameState.board[toCol][toRow];
+            
+            if (targetPiece) {
+                // 战斗逻辑
+                const result = resolveCombat(piece, targetPiece);
+                
+                if (result === 'win') {
+                    // 攻击方胜利
+                    gameState.board[toCol][toRow] = piece;
+                    gameState.board[fromCol][fromRow] = null;
+                    gameState.revealed[toCol][toRow] = true;
+                    gameState.revealed[fromCol][fromRow] = false;
+                    
+                    // 检查是否占领军旗
+                    if (targetPiece === '军旗') {
+                        endGame('player');
+                        return true;
+                    }
+                    
+                    showMessage(`你的 ${piece} 击败了 AI 的 ${targetPiece}`);
+                } else if (result === 'lose') {
+                    // 攻击方失败
+                    gameState.board[fromCol][fromRow] = null;
+                    gameState.revealed[fromCol][fromRow] = false;
+                    
+                    showMessage(`你的 ${piece} 被 AI 的 ${targetPiece} 击败`);
+                } else if (result === 'draw') {
+                    // 同归于尽
+                    gameState.board[fromCol][fromRow] = null;
+                    gameState.board[toCol][toRow] = null;
+                    gameState.revealed[fromCol][fromRow] = false;
+                    gameState.revealed[toCol][toRow] = false;
+                    
+                    showMessage(`你的 ${piece} 和 AI 的 ${targetPiece} 同归于尽`);
+                }
+            } else {
+                // 移动棋子
+                gameState.board[toCol][toRow] = piece;
+                gameState.board[fromCol][fromRow] = null;
+                gameState.revealed[toCol][toRow] = gameState.revealed[fromCol][fromRow];
+                gameState.revealed[fromCol][fromRow] = false;
+            }
+            
+            // 切换回合
+            gameState.selectedPos = null;
+            gameState.turn = 'ai';
+            updateTurnIndicator();
+            drawBoard();
+            
+            // AI 回合
+            setTimeout(aiTurn, 1000);
+            return true;
+        }
+
+        // 判断移动是否有效
+        function isValidMove(fromCol, fromRow, toCol, toRow) {
+            // 不能移出棋盘
+            if (toCol < 0 || toCol >= 12 || toRow < 0 || toRow >= 5) return false;
+            
+            // 不能移动到大本营
+            if ((toCol === 0 || toCol === 11) && (toRow === 0 || toRow === 4)) {
+                return false;
+            }
+            
+            // 不能移动到自己的行营
+            if (fromCol < 6 && (
+                (toCol === 2 && toRow === 1) ||
+                (toCol === 4 && toRow === 1) ||
+                (toCol === 2 && toRow === 3) ||
+                (toCol === 4 && toRow === 3)
+            )) {
+                return false;
+            }
+            
+            // 工兵可以在铁路线上任意移动
+            const piece = gameState.board[fromCol][fromRow];
+            if (piece === '工兵') {
+                // 检查是否在铁路线上
+                if (fromRow === 2 || toRow === 2 || 
+                    ((fromCol === 5 || fromCol === 6) && (toCol === 5 || toCol === 6))) {
+                    // 铁路线上的移动规则更宽松
+                    return true;
+                }
+            }
+            
+            // 普通棋子只能移动一格
+            const colDiff = Math.abs(toCol - fromCol);
+            const rowDiff = Math.abs(toRow - fromRow);
+            
+            return (colDiff === 1 && rowDiff === 0) || (colDiff === 0 && rowDiff === 1);
+        }
+
+        // 战斗解决逻辑
+        function resolveCombat(attacker, defender) {
+            // 炸弹与任何棋子同归于尽（除地雷和军旗）
+            if (attacker === '炸弹') {
+                if (defender === '地雷' || defender === '军旗') {
+                    return 'win';
+                }
+                return 'draw';
+            }
+            
+            // 地雷只能被工兵挖
+            if (defender === '地雷') {
+                return attacker === '工兵' ? 'win' : 'lose';
+            }
+            
+            // 军旗可以被任何棋子占领
+            if (defender === '军旗') {
+                return 'win';
+            }
+            
+            // 普通棋子比较等级
+            if (PIECE_RANKS[attacker] > PIECE_RANKS[defender]) {
+                return 'win';
+            } else if (PIECE_RANKS[attacker] < PIECE_RANKS[defender]) {
+                return 'lose';
+            } else {
+                return 'draw';
+            }
+        }
+
+        // AI 回合
+        function aiTurn() {
+            if (gameState.gameOver) return;
+            
+            // 简单AI：随机选择一个可移动的棋子，然后随机移动
+            const aiPieces = [];
+            for (let col = 6; col < 12; col++) {
+                for (let row = 0; row < 5; row++) {
+                    if (gameState.board[col][row]) {
+                        aiPieces.push({ col, row });
+                    }
+                }
+            }
+            
+            // 随机排序AI棋子
+            shuffleArray(aiPieces);
+            
+            let moved = false;
+            for (const { col, row } of aiPieces) {
+                const piece = gameState.board[col][row];
+                
+                // 获取可能的移动
+                const moves = [];
+                
+                // 检查四个方向
+                const directions = [
+                    { dc: 1, dr: 0 }, { dc: -1, dr: 0 },
+                    { dc: 0, dr: 1 }, { dc: 0, dr: -1 }
+                ];
+                
+                for (const { dc, dr } of directions) {
+                    const newCol = col + dc;
+                    const newRow = row + dr;
+                    
+                    if (newCol >= 0 && newCol < 12 && newRow >= 0 && newRow < 5) {
+                        // 不能移动到大本营
+                        if (!((newCol === 0 || newCol === 11) && (newRow === 0 || newRow === 4))) {
+                            // 不能移动到AI的行营
+                            if (!(newCol >= 6 && (
+                                (newCol === 8 && newRow === 1) ||
+                                (newCol === 10 && newRow === 1) ||
+                                (newCol === 8 && newRow === 3) ||
+                                (newCol === 10 && newRow === 3)
+                            ))) {
+                                moves.push({ col: newCol, row: newRow });
+                            }
+                        }
+                    }
+                }
+                
+                // 工兵可以在铁路线上任意移动
+                if (piece === '工兵') {
+                    // 简化版：可以沿铁路线移动更远
+                    if (row === 2) { // 在水平铁路上
+                        for (let c = 0; c < 12; c++) {
+                            if (c !== col && isValidMove(col, row, c, row)) {
+                                moves.push({ col: c, row });
+                            }
+                        }
+                    }
+                    
+                    if (col === 5 || col === 6) { // 在垂直铁路上
+                        for (let r = 0; r < 5; r++) {
+                            if (r !== row && isValidMove(col, row, col, r)) {
+                                moves.push({ col, row: r });
+                            }
+                        }
+                    }
+                }
+                
+                // 随机排序可能的移动
+                shuffleArray(moves);
+                
+                for (const move of moves) {
+                    const targetPiece = gameState.board[move.col][move.row];
+                    
+                    // 优先攻击已知的弱棋子
+                    if (targetPiece) {
+                        if (PIECE_RANKS[piece] > PIECE_RANKS[targetPiece]) {
+                            moved = executeAiMove(col, row, move.col, move.row);
+                            if (moved) break;
+                        }
+                    }
+                    
+                    // 随机移动
+                    moved = executeAiMove(col, row, move.col, move.row);
+                    if (moved) break;
+                }
+                
+                if (moved) break;
+            }
+            
+            if (!moved) {
+                // AI 无法移动，跳过回合
+                gameState.turn = 'player';
+                updateTurnIndicator();
+                drawBoard();
+            }
+        }
+
+        // 执行AI移动
+        function executeAiMove(fromCol, fromRow, toCol, toRow) {
+            const piece = gameState.board[fromCol][fromRow];
+            if (!piece) return false;
+            
+            if (!isValidMove(fromCol, fromRow, toCol, toRow)) return false;
+            
+            const targetPiece = gameState.board[toCol][toRow];
+            
+            if (targetPiece) {
+                const result = resolveCombat(piece, targetPiece);
+                
+                if (result === 'win') {
+                    gameState.board[toCol][toRow] = piece;
+                    gameState.board[fromCol][fromRow] = null;
+                    gameState.revealed[toCol][toRow] = true;
+                    gameState.revealed[fromCol][fromRow] = false;
+                    
+                    if (targetPiece === '军旗') {
+                        endGame('ai');
+                        return true;
+                    }
+                    
+                    showMessage(`AI 的 ${piece} 击败了你的 ${targetPiece}`);
+                } else if (result === 'lose') {
+                    gameState.board[fromCol][fromRow] = null;
+                    gameState.revealed[fromCol][fromRow] = false;
+                    
+                    showMessage(`AI 的 ${piece} 被你的 ${targetPiece} 击败`);
+                } else if (result === 'draw') {
+                    gameState.board[fromCol][fromRow] = null;
+                    gameState.board[toCol][toRow] = null;
+                    gameState.revealed[fromCol][fromRow] = false;
+                    gameState.revealed[toCol][toRow] = false;
+                    
+                    showMessage(`AI 的 ${piece} 和你的 ${targetPiece} 同归于尽`);
+                }
+            } else {
+                gameState.board[toCol][toRow] = piece;
+                gameState.board[fromCol][fromRow] = null;
+                gameState.revealed[toCol][toRow] = gameState.revealed[fromCol][fromRow];
+                gameState.revealed[fromCol][fromRow] = false;
+            }
+            
+            gameState.turn = 'player';
+            updateTurnIndicator();
+            drawBoard();
+            return true;
+        }
+
+        // 显示AI建议
+        function showAISuggestions() {
+            // 清除旧提示
+            document.querySelectorAll('.ai-hint').forEach(el => el.remove());
+            
+            // 获取最佳走法
+            const bestMoves = getBestMoves();
+            
+            // 显示前3个最佳走法
+            bestMoves.slice(0, 3).forEach((move, index) => {
+                const fromCol = move.from.col;
+                const fromRow = move.from.row;
+                const toCol = move.to.col;
+                const toRow = move.to.row;
+                
+                const hint = document.createElement('div');
+                hint.className = `ai-hint hint-${index + 1}`;
+                
+                const line = document.createElement('div');
+                line.className = 'hint-line';
+                
+                const label = document.createElement('div');
+                label.className = 'hint-label';
+                label.textContent = `方案${index + 1}`;
+                
+                hint.appendChild(line);
+                hint.appendChild(label);
+                gameBoard.appendChild(hint);
+                
+                // 计算线条位置
+                const cellSize = 60;
+                const offsetX = 30;
+                const offsetY = 30;
+                
+                const fromX = offsetX + fromCol * cellSize;
+                const fromY = offsetY + fromRow * cellSize;
+                const toX = offsetX + toCol * cellSize;
+                const toY = offsetY + toRow * cellSize;
+                
+                const angle = Math.atan2(toY - fromY, toX - fromX);
+                const length = Math.sqrt(Math.pow(toX - fromX, 2) + Math.pow(toY - fromY, 2));
+                
+                line.style.width = `${length}px`;
+                line.style.left = `${fromX}px`;
+                line.style.top = `${fromY}px`;
+                line.style.transform = `rotate(${angle}rad)`;
+                
+                label.style.left = `${(fromX + toX) / 2}px`;
+                label.style.top = `${(fromY + toY) / 2}px`;
+            });
+        }
+
+        // 获取最佳走法
+        function getBestMoves() {
+            const moves = [];
+            
+            // 扫描所有AI棋子
+            for (let col = 6; col < 12; col++) {
+                for (let row = 0; row < 5; row++) {
+                    const piece = gameState.board[col][row];
+                    if (!piece) continue;
+                    
+                    // 获取可能的移动
+                    const pieceMoves = getPossibleMoves(col, row);
+                    
+                    // 评估每个移动
+                    pieceMoves.forEach(move => {
+                        const score = evaluateMove(col, row, move.col, move.row);
+                        moves.push({
+                            from: { col, row },
+                            to: move,
+                            score
+                        });
+                    });
+                }
+            }
+            
+            // 按分数排序
+            return moves.sort((a, b) => b.score - a.score);
+        }
+
+        // 获取可能的移动
+        function getPossibleMoves(col, row) {
+            const moves = [];
+            const piece = gameState.board[col][row];
+            
+            // 检查四个方向
+            const directions = [
+                { dc: 1, dr: 0 }, { dc: -1, dr: 0 },
+                { dc: 0, dr: 1 }, { dc: 0, dr: -1 }
+            ];
+            
+            for (const { dc, dr } of directions) {
+                const newCol = col + dc;
+                const newRow = row + dr;
+                
+                if (newCol >= 0 && newCol < 12 && newRow >= 0 && newRow < 5) {
+                    // 不能移动到大本营
+                    if (!((newCol === 0 || newCol === 11) && (newRow === 0 || newRow === 4))) {
+                        // 不能移动到自己的行营
+                        if (!(col >= 6 && (
+                            (newCol === 8 && newRow === 1) ||
+                            (newCol === 10 && newRow === 1) ||
+                            (newCol === 8 && newRow === 3) ||
+                            (newCol === 10 && newRow === 3)
+                        ))) {
+                            if (isValidMove(col, row, newCol, newRow)) {
+                                moves.push({ col: newCol, row: newRow });
+                            }
+                        }
+                    }
+                }
+            }
+            
+            // 工兵可以在铁路线上任意移动
+            if (piece === '工兵') {
+                if (row === 2) { // 在水平铁路上
+                    for (let c = 0; c < 12; c++) {
+                        if (c !== col && isValidMove(col, row, c, row)) {
+                            moves.push({ col: c, row });
+                        }
+                    }
+                }
+                
+                if (col === 5 || col === 6) { // 在垂直铁路上
+                    for (let r = 0; r < 5; r++) {
+                        if (r !== row && isValidMove(col, row, col, r)) {
+                            moves.push({ col, row: r });
+                        }
+                    }
+                }
+            }
+            
+            return moves;
+        }
+
+        // 评估移动
+        function evaluateMove(fromCol, fromRow, toCol, toRow) {
+            let score = 0;
+            const piece = gameState.board[fromCol][fromRow];
+            const targetPiece = gameState.board[toCol][toRow];
+            
+            // 占领军旗直接获胜
+            if (targetPiece === '军旗') return 10000;
+            
+            // 攻击评估
+            if (targetPiece) {
+                const result = resolveCombat(piece, targetPiece);
+                
+                if (result === 'win') {
+                    // 获得目标棋子的价值
+                    score += PIECE_VALUES[targetPiece] * 2;
+                    
+                    // 如果目标是高级棋子，额外加分
+                    if (PIECE_RANKS[targetPiece] >= 5) {
+                        score += 20;
+                    }
+                } else if (result === 'lose') {
+                    // 失去自己的棋子
+                    score -= PIECE_VALUES[piece] * 2;
+                } else if (result === 'draw') {
+                    // 同归于尽
+                    score -= PIECE_VALUES[piece] / 2;
+                }
+            } else {
+                // 移动评估
+                // 靠近对方军旗加分
+                const distanceToFlag = Math.min(
+                    Math.abs(toCol - 0) + Math.abs(toRow - 0),
+                    Math.abs(toCol - 11) + Math.abs(toRow - 4)
+                );
+                score += (20 - distanceToFlag) * 2;
+                
+                // 移动到前线加分
+                if (toCol < 6) score += 10;
+            }
+            
+            return score;
+        }
+
+        // 游戏结束
+        function endGame(winner) {
+            gameState.gameOver = true;
+            
+            if (winner === 'player') {
+                showMessage('恭喜！你击败了AI的军旗！', true);
+            } else {
+                showMessage('AI击败了你的军旗！再试一次吧！', true);
+            }
+            
+            drawBoard();
+        }
+
+        // 显示消息
+        function showMessage(text, isEndGame = false) {
+            gameMessage.textContent = text;
+            gameMessage.style.display = 'block';
+            
+            if (!isEndGame) {
+                setTimeout(() => {
+                    gameMessage.style.display = 'none';
+                }, 2000);
+            }
+        }
+
+        // 更新回合指示器
+        function updateTurnIndicator() {
+            if (gameState.turn === 'player') {
+                turnIndicator.textContent = '玩家回合';
+                turnIndicator.className = 'turn-indicator player-turn';
+            } else {
+                turnIndicator.textContent = 'AI回合';
+                turnIndicator.className = 'turn-indicator ai-turn';
+            }
+        }
+
+        // 工具函数：随机打乱数组
+        function shuffleArray(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+            return array;
+        }
+
+        // 初始化游戏
+        document.addEventListener('DOMContentLoaded', () => {
+            initGame();
+            
+            // 显示/隐藏AI建议
+            showHintsBtn.addEventListener('click', () => {
+                gameState.showHints = !gameState.showHints;
+                showHintsBtn.textContent = gameState.showHints ? 
+                    '隐藏AI建议 (H)' : '显示AI建议 (H)';
+                drawBoard();
+            });
+            
+            // 重新开始游戏
+            restartBtn.addEventListener('click', initGame);
+            
+            // 键盘快捷键
+            document.addEventListener('keydown', (e) => {
+                if (e.key.toLowerCase() === 'h') {
+                    gameState.showHints = !gameState.showHints;
+                    showHintsBtn.textContent = gameState.showHints ? 
+                        '隐藏AI建议 (H)' : '显示AI建议 (H)';
+                    drawBoard();
+                } else if (e.key.toLowerCase() === 'r') {
+                    initGame();
+                }
+            });
+        });
+    </script>
+</body>
+</html>
