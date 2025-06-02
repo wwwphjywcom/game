@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html>
+<head> 
+    <title>中国象棋AI对弈</title> 
+    <style> 
+        body { display: flex; justify-content: center; margin-top: 20px } 
+        canvas { 
+            border: 2px solid #333; 
+            cursor: pointer; 
+        }
+    </style>
+</head>
+<body> 
+    <canvas id="chessBoard" width="600" height="650"></canvas> 
+ 
+    <script>
+        // 棋子数据结构 
+        const pieces = { 
+            'K': '帅', 'k': '将', 
+            'A': '仕', 'a': '士', 
+            'B': '相', 'b': '象', 
+            'N': '马', 'n': '马',
+            'R': '车', 'r': '车',
+            'C': '炮', 'c': '炮', 
+            'P': '兵', 'p': '卒' 
+        };
+ 
+        // 棋盘绘制
+        function drawBoard(ctx) {
+            // 绘制背景 
+            ctx.fillStyle  = '#f5deb3';
+            ctx.fillRect(0,  0, 600, 650);
+            
+            // 绘制横线
+            for(let i=0; i<10; i++) {
+                ctx.beginPath(); 
+                ctx.moveTo(50,  50 + i*50);
+                ctx.lineTo(550,  50 + i*50);
+                ctx.stroke(); 
+            } 
+            
+            // 绘制竖线 
+            for(let i=0; i<9; i++) { 
+                ctx.beginPath();  
+                ctx.moveTo(50  + i*50, 50); 
+                ctx.lineTo(50  + i*50, 500); 
+                ctx.stroke();  
+            } 
+            
+            // 绘制楚河汉界 
+            ctx.font  = "20px Arial"; 
+            ctx.fillText(" 楚河", 260, 220); 
+            ctx.fillText(" 漢界", 260, 420);
+            
+            // 绘制九宫格 
+            [8, 0].forEach(row => {
+                ctx.beginPath(); 
+                ctx.moveTo(200,  50 + row*450); 
+                ctx.lineTo(300,  50 + row*450);
+                ctx.lineTo(250,  100 + row*450);
+                ctx.closePath(); 
+                ctx.stroke(); 
+            }); 
+        }
+ 
+        // 初始棋盘布局 
+        let board = [
+            ['r','n','b','a','k','a','b','n','r'],
+            [' ',' ',' ',' ',' ',' ',' ',' ',' '],
+            [' ','c',' ',' ',' ',' ',' ','c',' '], 
+            ['p',' ','p',' ','p',' ','p',' ','p'], 
+            [' ',' ',' ',' ',' ',' ',' ',' ',' '], 
+            [' ',' ',' ',' ',' ',' ',' ',' ',' '], 
+            ['P',' ','P',' ','P',' ','P',' ','P'], 
+            [' ','C',' ',' ',' ',' ',' ','C',' '],
+            [' ',' ',' ',' ',' ',' ',' ',' ',' '],
+            ['R','N','B','A','K','A','B','N','R']
+        ]; 
+ 
+        // 坐标转换 
+        function toBoardCoord(x, y) {
+            return {
+                col: Math.round((x  - 50) / 50),
+                row: Math.round((y  - 50) / 50) 
+            };
+        } 
+ 
+        // 绘制棋子 
+        function drawPieces(ctx) {
+            for(let row=0; row<10; row++) {
+                for(let col=0; col<9; col++) { 
+                    const piece = board[row][col]; 
+                    if(piece !== ' ') { 
+                        ctx.beginPath();  
+                        ctx.arc(50  + col*50, 50 + row*50, 20, 0, Math.PI*2); 
+                        ctx.fillStyle  = piece === piece.toUpperCase()  ? '#c11b17' : '#000080'; 
+                        ctx.fill();  
+                        ctx.strokeStyle  = '#fff';
+                        ctx.stroke();  
+                        
+                        ctx.fillStyle  = '#fff';
+                        ctx.font  = "20px 微软雅黑";
+                        ctx.textAlign  = 'center';
+                        ctx.textBaseline  = 'middle';
+                        ctx.fillText(pieces[piece],  
+                            50 + col*50, 50 + row*50);
+                    } 
+                }
+            } 
+        }
+ 
+        // 游戏初始化 
+        function init() {
+            const canvas = document.getElementById('chessBoard'); 
+            const ctx = canvas.getContext('2d');  
+            
+            drawBoard(ctx);
+            drawPieces(ctx);
+ 
+            let selected = null; 
+ 
+            canvas.addEventListener('click',  (e) => { 
+                const rect = canvas.getBoundingClientRect(); 
+                const x = e.clientX  - rect.left;  
+                const y = e.clientY  - rect.top;  
+                
+                const pos = toBoardCoord(x, y); 
+                
+                if(selected) { 
+                    // 移动棋子逻辑 
+                    if(pos.col  >=0 && pos.col  <9 && pos.row  >=0 && pos.row  <10) {
+                        board[pos.row][pos.col] = board[selected.row][selected.col];
+                        board[selected.row][selected.col] = ' '; 
+                        selected = null;
+                        
+                        // 重绘画布 
+                        ctx.clearRect(0,  0, 600, 650); 
+                        drawBoard(ctx);
+                        drawPieces(ctx); 
+                        
+                        // 简单AI移动 
+                        setTimeout(aiMove, 500);
+                    } 
+                } else { 
+                    // 选择棋子 
+                    if(pos.col  >=0 && pos.col  <9 && pos.row  >=0 && pos.row  <10 &&
+                       board[pos.row][pos.col] !== ' ') {
+                        selected = pos; 
+                        
+                        // 高亮选中 
+                        ctx.beginPath();  
+                        ctx.arc(50  + pos.col*50,  50 + pos.row*50,  25, 0, Math.PI*2); 
+                        ctx.strokeStyle  = '#ff0000';
+                        ctx.stroke(); 
+                        drawPieces(ctx); 
+                    }
+                } 
+            });
+        } 
+ 
+        // 简单AI移动逻辑 
+        function aiMove() { 
+            // 寻找所有可移动棋子
+            let moves = []; 
+            for(let row=0; row<10; row++) {
+                for(let col=0; col<9; col++) { 
+                    if(board[row][col] !== ' ' && 
+                       board[row][col] === board[row][col].toLowerCase()) { 
+                        // 简单随机移动（实际应实现完整规则）
+                        moves.push({from:  {row, col}, to: {row: row+1, col}}); 
+                    }
+                } 
+            } 
+            
+            if(moves.length  > 0) {
+                const move = moves[Math.floor(Math.random() * moves.length)];  
+                board[move.to.row][move.to.col] = board[move.from.row][move.from.col];
+                board[move.from.row][move.from.col] = ' '; 
+                
+                // 重绘画布 
+                const canvas = document.getElementById('chessBoard'); 
+                const ctx = canvas.getContext('2d');  
+                ctx.clearRect(0,  0, 600, 650); 
+                drawBoard(ctx); 
+                drawPieces(ctx);
+            } 
+        }
+ 
+        // 启动游戏 
+        init(); 
+    </script>
+</body>
+</html>

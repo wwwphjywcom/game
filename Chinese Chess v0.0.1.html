@@ -1,0 +1,256 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 650" width="600" height="650">
+    <!-- 棋盘背景 -->
+    <rect x="45" y="45" width="510" height="510" fill="#FFE4B5" rx="5" ry="5" />
+    
+    <!-- 楚河汉界 -->
+    <rect x="45" y="295" width="510" height="60" fill="#FFF8DC" opacity="0.7" />
+    <text x="300" y="325" font-family="SimSun, serif" font-size="48" text-anchor="middle" fill="#8B4513">楚河     汉界</text>
+    
+    <!-- 绘制网格线 -->
+    <g stroke="#8B4513" stroke-width="2">
+        <!-- 横线 -->
+        <line x1="50" y1="50" x2="550" y2="50" />
+        <line x1="50" y1="100" x2="550" y2="100" />
+        <line x1="50" y1="150" x2="550" y2="150" />
+        <line x1="50" y1="200" x2="550" y2="200" />
+        <line x1="50" y1="250" x2="550" y2="250" />
+        <line x1="50" y1="350" x2="550" y2="350" />
+        <line x1="50" y1="400" x2="550" y2="400" />
+        <line x1="50" y1="450" x2="550" y2="450" />
+        <line x1="50" y1="500" x2="550" y2="500" />
+        <line x1="50" y1="550" x2="550" y2="550" />
+        
+        <!-- 竖线 -->
+        <line x1="50" y1="50" x2="50" y2="550" />
+        <line x1="100" y1="50" x2="100" y2="250" />
+        <line x1="100" y1="350" x2="100" y2="550" />
+        <line x1="150" y1="50" x2="150" y2="250" />
+        <line x1="150" y1="350" x2="150" y2="550" />
+        <line x1="200" y1="50" x2="200" y2="250" />
+        <line x1="200" y1="350" x2="200" y2="550" />
+        <line x1="250" y1="50" x2="250" y2="250" />
+        <line x1="250" y1="350" x2="250" y2="550" />
+        <line x1="300" y1="50" x2="300" y2="250" />
+        <line x1="300" y1="350" x2="300" y2="550" />
+        <line x1="350" y1="50" x2="350" y2="250" />
+        <line x1="350" y1="350" x2="350" y2="550" />
+        <line x1="400" y1="50" x2="400" y2="250" />
+        <line x1="400" y1="350" x2="400" y2="550" />
+        <line x1="450" y1="50" x2="450" y2="250" />
+        <line x1="450" y1="350" x2="450" y2="550" />
+        <line x1="500" y1="50" x2="500" y2="250" />
+        <line x1="500" y1="350" x2="500" y2="550" />
+        <line x1="550" y1="50" x2="550" y2="550" />
+    </g>
+    
+    <!-- 九宫格斜线 -->
+    <g stroke="#8B4513" stroke-width="2">
+        <!-- 上方九宫格 -->
+        <line x1="200" y1="50" x2="350" y2="200" />
+        <line x1="350" y1="50" x2="200" y2="200" />
+        
+        <!-- 下方九宫格 -->
+        <line x1="200" y1="400" x2="350" y2="550" />
+        <line x1="350" y1="400" x2="200" y2="550" />
+    </g>
+    
+    <!-- 兵卒位置标记 -->
+    <g stroke="#8B4513" stroke-width="2">
+        <!-- 上方兵位置 -->
+        <path d="M100,150 L108,150 L108,158 L100,158 Z" />
+        <path d="M100,150 L92,150 L92,158 L100,158 Z" />
+        <path d="M100,150 L100,142 L108,142 L108,150 Z" />
+        <path d="M100,150 L100,142 L92,142 L92,150 Z" />
+        
+        <path d="M200,150 L208,150 L208,158 L200,158 Z" />
+        <path d="M200,150 L192,150 L192,158 L200,158 Z" />
+        <path d="M200,150 L200,142 L208,142 L208,150 Z" />
+        <path d="M200,150 L200,142 L192,142 L192,150 Z" />
+        
+        <path d="M300,150 L308,150 L308,158 L300,158 Z" />
+        <path d="M300,150 L292,150 L292,158 L300,158 Z" />
+        <path d="M300,150 L300,142 L308,142 L308,150 Z" />
+        <path d="M300,150 L300,142 L292,142 L292,150 Z" />
+        
+        <path d="M400,150 L408,150 L408,158 L400,158 Z" />
+        <path d="M400,150 L392,150 L392,158 L400,158 Z" />
+        <path d="M400,150 L400,142 L408,142 L408,150 Z" />
+        <path d="M400,150 L400,142 L392,142 L392,150 Z" />
+        
+        <path d="M500,150 L508,150 L508,158 L500,158 Z" />
+        <path d="M500,150 L492,150 L492,158 L500,158 Z" />
+        <path d="M500,150 L500,142 L508,142 L508,150 Z" />
+        <path d="M500,150 L500,142 L492,142 L492,150 Z" />
+        
+        <!-- 下方卒位置 -->
+        <path d="M100,400 L108,400 L108,408 L100,408 Z" />
+        <path d="M100,400 L92,400 L92,408 L100,408 Z" />
+        <path d="M100,400 L100,392 L108,392 L108,400 Z" />
+        <path d="M100,400 L100,392 L92,392 L92,400 Z" />
+        
+        <path d="M200,400 L208,400 L208,408 L200,408 Z" />
+        <path d="M200,400 L192,400 L192,408 L200,408 Z" />
+        <path d="M200,400 L200,392 L208,392 L208,400 Z" />
+        <path d="M200,400 L200,392 L192,392 L192,400 Z" />
+        
+        <path d="M300,400 L308,400 L308,408 L300,408 Z" />
+        <path d="M300,400 L292,400 L292,408 L300,408 Z" />
+        <path d="M300,400 L300,392 L308,392 L308,400 Z" />
+        <path d="M300,400 L300,392 L292,392 L292,400 Z" />
+        
+        <path d="M400,400 L408,400 L408,408 L400,408 Z" />
+        <path d="M400,400 L392,400 L392,408 L400,408 Z" />
+        <path d="M400,400 L400,392 L408,392 L408,400 Z" />
+        <path d="M400,400 L400,392 L392,392 L392,400 Z" />
+        
+        <path d="M500,400 L508,400 L508,408 L500,408 Z" />
+        <path d="M500,400 L492,400 L492,408 L500,408 Z" />
+        <path d="M500,400 L500,392 L508,392 L508,400 Z" />
+        <path d="M500,400 L500,392 L492,392 L492,400 Z" />
+    </g>
+    
+    <!-- 红方棋子 -->
+    <g>
+        <!-- 车 -->
+        <circle cx="50" cy="550" r="22" fill="#CD5C5C" stroke="#8B0000" stroke-width="2" />
+        <text x="50" y="550" font-family="SimSun, serif" font-size="24" text-anchor="middle" fill="white">車</text>
+        
+        <circle cx="550" cy="550" r="22" fill="#CD5C5C" stroke="#8B0000" stroke-width="2" />
+        <text x="550" y="550" font-family="SimSun, serif" font-size="24" text-anchor="middle" fill="white">車</text>
+        
+        <!-- 马 -->
+        <circle cx="100" cy="550" r="22" fill="#CD5C5C" stroke="#8B0000" stroke-width="2" />
+        <text x="100" y="550" font-family="SimSun, serif" font-size="24" text-anchor="middle" fill="white">馬</text>
+        
+        <circle cx="500" cy="550" r="22" fill="#CD5C5C" stroke="#8B0000" stroke-width="2" />
+        <text x="500" y="550" font-family="SimSun, serif" font-size="24" text-anchor="middle" fill="white">馬</text>
+        
+        <!-- 相 -->
+        <circle cx="150" cy="550" r="22" fill="#CD5C5C" stroke="#8B0000" stroke-width="2" />
+        <text x="150" y="550" font-family="SimSun, serif" font-size="24" text-anchor="middle" fill="white">相</text>
+        
+        <circle cx="450" cy="550" r="22" fill="#CD5C5C" stroke="#8B0000" stroke-width="2" />
+        <text x="450" y="550" font-family="SimSun, serif" font-size="24" text-anchor="middle" fill="white">相</text>
+        
+        <!-- 士 -->
+        <circle cx="200" cy="550" r="22" fill="#CD5C5C" stroke="#8B0000" stroke-width="2" />
+        <text x="200" y="550" font-family="SimSun, serif" font-size="24" text-anchor="middle" fill="white">士</text>
+        
+        <circle cx="400" cy="550" r="22" fill="#CD5C5C" stroke="#8B0000" stroke-width="2" />
+        <text x="400" y="550" font-family="SimSun, serif" font-size="24" text-anchor="middle" fill="white">士</text>
+        
+        <!-- 将 -->
+        <circle cx="300" cy="550" r="22" fill="#CD5C5C" stroke="#8B0000" stroke-width="2" />
+        <text x="300" y="550" font-family="SimSun, serif" font-size="24" text-anchor="middle" fill="white">帥</text>
+        
+        <!-- 炮 -->
+        <circle cx="100" cy="450" r="22" fill="#CD5C5C" stroke="#8B0000" stroke-width="2" />
+        <text x="100" y="450" font-family="SimSun, serif" font-size="24" text-anchor="middle" fill="white">炮</text>
+        
+        <circle cx="500" cy="450" r="22" fill="#CD5C5C" stroke="#8B0000" stroke-width="2" />
+        <text x="500" y="450" font-family="SimSun, serif" font-size="24" text-anchor="middle" fill="white">炮</text>
+        
+        <!-- 卒 -->
+        <circle cx="50" cy="400" r="22" fill="#CD5C5C" stroke="#8B0000" stroke-width="2" />
+        <text x="50" y="400" font-family="SimSun, serif" font-size="24" text-anchor="middle" fill="white">卒</text>
+        
+        <circle cx="200" cy="400" r="22" fill="#CD5C5C" stroke="#8B0000" stroke-width="2" />
+        <text x="200" y="400" font-family="SimSun, serif" font-size="24" text-anchor="middle" fill="white">卒</text>
+        
+        <circle cx="300" cy="400" r="22" fill="#CD5C5C" stroke="#8B0000" stroke-width="2" />
+        <text x="300" y="400" font-family="SimSun, serif" font-size="24" text-anchor="middle" fill="white">卒</text>
+        
+        <circle cx="400" cy="400" r="22" fill="#CD5C5C" stroke="#8B0000" stroke-width="2" />
+        <text x="400" y="400" font-family="SimSun, serif" font-size="24" text-anchor="middle" fill="white">卒</text>
+        
+        <circle cx="500" cy="400" r="22" fill="#CD5C5C" stroke="#8B0000" stroke-width="2" />
+        <text x="500" y="400" font-family="SimSun, serif" font-size="24" text-anchor="middle" fill="white">卒</text>
+    </g>
+    
+    <!-- 黑方棋子 -->
+    <g>
+        <!-- 车 -->
+        <circle cx="50" cy="50" r="22" fill="#4682B4" stroke="#000080" stroke-width="2" />
+        <text x="50" y="50" font-family="SimSun, serif" font-size="24" text-anchor="middle" fill="white">車</text>
+        
+        <circle cx="550" cy="50" r="22" fill="#4682B4" stroke="#000080" stroke-width="2" />
+        <text x="550" y="50" font-family="SimSun, serif" font-size="24" text-anchor="middle" fill="white">車</text>
+        
+        <!-- 马 -->
+        <circle cx="100" cy="50" r="22" fill="#4682B4" stroke="#000080" stroke-width="2" />
+        <text x="100" y="50" font-family="SimSun, serif" font-size="24" text-anchor="middle" fill="white">馬</text>
+        
+        <circle cx="500" cy="50" r="22" fill="#4682B4" stroke="#000080" stroke-width="2" />
+        <text x="500" y="50" font-family="SimSun, serif" font-size="24" text-anchor="middle" fill="white">馬</text>
+        
+        <!-- 象 -->
+        <circle cx="150" cy="50" r="22" fill="#4682B4" stroke="#000080" stroke-width="2" />
+        <text x="150" y="50" font-family="SimSun, serif" font-size="24" text-anchor="middle" fill="white">象</text>
+        
+        <circle cx="450" cy="50" r="22" fill="#4682B4" stroke="#000080" stroke-width="2" />
+        <text x="450" y="50" font-family="SimSun, serif" font-size="24" text-anchor="middle" fill="white">象</text>
+        
+        <!-- 士 -->
+        <circle cx="200" cy="50" r="22" fill="#4682B4" stroke="#000080" stroke-width="2" />
+        <text x="200" y="50" font-family="SimSun, serif" font-size="24" text-anchor="middle" fill="white">士</text>
+        
+        <circle cx="400" cy="50" r="22" fill="#4682B4" stroke="#000080" stroke-width="2" />
+        <text x="400" y="50" font-family="SimSun, serif" font-size="24" text-anchor="middle" fill="white">士</text>
+        
+        <!-- 帅 -->
+        <circle cx="300" cy="50" r="22" fill="#4682B4" stroke="#000080" stroke-width="2" />
+        <text x="300" y="50" font-family="SimSun, serif" font-size="24" text-anchor="middle" fill="white">將</text>
+        
+        <!-- 炮 -->
+        <circle cx="100" cy="150" r="22" fill="#4682B4" stroke="#000080" stroke-width="2" />
+        <text x="100" y="150" font-family="SimSun, serif" font-size="24" text-anchor="middle" fill="white">炮</text>
+        
+        <circle cx="500" cy="150" r="22" fill="#4682B4" stroke="#000080" stroke-width="2" />
+        <text x="500" y="150" font-family="SimSun, serif" font-size="24" text-anchor="middle" fill="white">炮</text>
+        
+        <!-- 兵 -->
+        <circle cx="50" cy="200" r="22" fill="#4682B4" stroke="#000080" stroke-width="2" />
+        <text x="50" y="200" font-family="SimSun, serif" font-size="24" text-anchor="middle" fill="white">兵</text>
+        
+        <circle cx="200" cy="200" r="22" fill="#4682B4" stroke="#000080" stroke-width="2" />
+        <text x="200" y="200" font-family="SimSun, serif" font-size="24" text-anchor="middle" fill="white">兵</text>
+        
+        <circle cx="300" cy="200" r="22" fill="#4682B4" stroke="#000080" stroke-width="2" />
+        <text x="300" y="200" font-family="SimSun, serif" font-size="24" text-anchor="middle" fill="white">兵</text>
+        
+        <circle cx="400" cy="200" r="22" fill="#4682B4" stroke="#000080" stroke-width="2" />
+        <text x="400" y="200" font-family="SimSun, serif" font-size="24" text-anchor="middle" fill="white">兵</text>
+        
+        <circle cx="500" cy="200" r="22" fill="#4682B4" stroke="#000080" stroke-width="2" />
+        <text x="500" y="200" font-family="SimSun, serif" font-size="24" text-anchor="middle" fill="white">兵</text>
+    </g>
+    
+    <!-- 坐标标记 -->
+    <g font-family="Arial, sans-serif" font-size="14" fill="#8B4513">
+        <!-- 列标记 -->
+        <text x="50" y="40" text-anchor="middle">a</text>
+        <text x="100" y="40" text-anchor="middle">b</text>
+        <text x="150" y="40" text-anchor="middle">c</text>
+        <text x="200" y="40" text-anchor="middle">d</text>
+        <text x="250" y="40" text-anchor="middle">e</text>
+        <text x="300" y="40" text-anchor="middle">f</text>
+        <text x="350" y="40" text-anchor="middle">g</text>
+        <text x="400" y="40" text-anchor="middle">h</text>
+        <text x="450" y="40" text-anchor="middle">i</text>
+        <text x="500" y="40" text-anchor="middle">j</text>
+        <text x="550" y="40" text-anchor="middle">k</text>
+        
+        <!-- 行标记 -->
+        <text x="40" y="50" text-anchor="end" alignment-baseline="middle">10</text>
+        <text x="40" y="100" text-anchor="end" alignment-baseline="middle">9</text>
+        <text x="40" y="150" text-anchor="end" alignment-baseline="middle">8</text>
+        <text x="40" y="200" text-anchor="end" alignment-baseline="middle">7</text>
+        <text x="40" y="250" text-anchor="end" alignment-baseline="middle">6</text>
+        <text x="40" y="350" text-anchor="end" alignment-baseline="middle">5</text>
+        <text x="40" y="400" text-anchor="end" alignment-baseline="middle">4</text>
+        <text x="40" y="450" text-anchor="end" alignment-baseline="middle">3</text>
+        <text x="40" y="500" text-anchor="end" alignment-baseline="middle">2</text>
+        <text x="40" y="550" text-anchor="end" alignment-baseline="middle">1</text>
+    </g>
+</svg>
+    
